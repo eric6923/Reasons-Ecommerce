@@ -1,0 +1,16 @@
+/* Footer.css */
+.section-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
+  }
+  
+  .animate-open {
+    max-height: 500px; /* Arbitrary large value to allow content expansion */
+    transition: max-height 0.5s ease-in-out;
+  }
+  
+  .transition-transform {
+    transition: transform 0.3s ease-in-out;
+  }
+  

@@ -1,0 +1,31 @@
+body {
+  font-family: 'Raleway', sans-serif;
+}
+
+.hero-title {
+  font-family: 'Host Grotesk', sans-serif;
+  font-weight: 800; /* Example weight */
+}
+
+.hero-text {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 300; /* Example weight */
+}
+
+/* Hide scrollbars for all elements */
+* {
+  scrollbar-width: none; /* Firefox */
+}
+
+*::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
+}
+
+
+.backdrop-blur-lg {
+  backdrop-filter: blur(10px);
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
