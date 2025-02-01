@@ -45,9 +45,9 @@ function App() {
                     } />
                     <Route path="/whatsnew" element={
                         <>
-                            {/* <Navbar />
+                            <Navbar />
                             <WhatsNewPage />
-                            <Footer /> */}
+                            <Footer />
                         </>
                     } />
                     <Route path="/HighJewelryComponent" element={
