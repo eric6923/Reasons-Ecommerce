@@ -1,30 +1,22 @@
 import React from 'react';
 
   const images = [
-    'https://i.pinimg.com/564x/d4/32/19/d432190386cbd048ce5fdc9bfebaee23.jpg',
-    'https://i.pinimg.com/564x/a5/c0/91/a5c091b694ac12f2116c5a29b7f3e8b4.jpg',
-    'https://i.pinimg.com/736x/5f/ea/79/5fea7973f04dbf3cf53abb20fa2e4d8b.jpg',
-    'https://i.pinimg.com/736x/35/c5/37/35c5379300a5814bb3516b1a3eeda0fe.jpg',
-    'https://i.pinimg.com/564x/5b/44/52/5b44523bdd93797cd40848b5b358b520.jpg',
-    'https://i.pinimg.com/564x/e7/3e/b6/e73eb610477d98e97ebf916592d825cc.jpg',
-    'https://i.pinimg.com/564x/4c/84/7f/4c847fe7a1129c165415c46f2ed52977.jpg',
-    'https://i.pinimg.com/736x/c7/c4/cf/c7c4cf76200c12dc698b970cb65218a6.jpg',
-    'https://i.pinimg.com/564x/ab/6b/a8/ab6ba8df65b8747c34d53861d0063f3f.jpg',
-    'https://i.pinimg.com/564x/8d/a9/bc/8da9bc5b626d298b9e2ba43bd4579a32.jpg',
-    'https://i.pinimg.com/736x/da/e0/af/dae0afe558fc29c1759dfecae1cef049.jpg',
-    'https://i.pinimg.com/564x/f5/e4/bd/f5e4bddf70b886fd33536bd9825c49f1.jpg',
+    'https://res.cloudinary.com/djrbv23s0/image/upload/v1738380119/11_d87dr2.jpg',
+    'https://res.cloudinary.com/djrbv23s0/image/upload/v1738380156/12_frxufv.jpg',
+    'https://res.cloudinary.com/djrbv23s0/image/upload/v1738380253/13_a1p9ic.jpg',
+    'https://res.cloudinary.com/djrbv23s0/image/upload/v1738380253/14_eu6izr.jpg',
+    'https://res.cloudinary.com/djrbv23s0/image/upload/v1738380342/15_i5ho9v.jpg',
+    'https://res.cloudinary.com/djrbv23s0/image/upload/v1738380342/16_bt55im.jpg',
+    'https://res.cloudinary.com/djrbv23s0/image/upload/v1738380424/17_fms5qq.jpg',
+    'https://res.cloudinary.com/djrbv23s0/image/upload/v1738380425/18_rgrsaj.jpg',
+    'https://res.cloudinary.com/djrbv23s0/image/upload/v1738380655/19_vzwupx.jpg',
+    'https://res.cloudinary.com/djrbv23s0/image/upload/v1738380655/20_rdg5lv.jpg',
+    'https://res.cloudinary.com/djrbv23s0/image/upload/v1738380745/21_an3b0t.jpg',
+    'https://res.cloudinary.com/djrbv23s0/image/upload/v1738380745/22_d7oev3.jpg',
   ];
   export default function ImageLayout() { 
   return (
     <div className="masonry-container">
-      {/* Video Section without controls */}
-      <div className="video-container mb-1">
-        <video width="100%" autoPlay muted loop>
-          <source src="/assets/HeroVideo.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
-
       <div className="masonry-layout">
         {images.map((src, index) => (
           <div key={index} className="masonry-item">

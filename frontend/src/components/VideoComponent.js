@@ -16,7 +16,7 @@ const VideoComponent = () => {
         <div className="relative w-full h-screen mb-3 md:w-1/3">
           <video
             className="w-full h-full object-cover"
-            src="/assets/video3.mp4"
+            src="https://res.cloudinary.com/djrbv23s0/video/upload/v1738379236/video3_jczqhj.mp4"
             muted
             autoPlay
             loop
@@ -32,7 +32,7 @@ const VideoComponent = () => {
         <div className="relative w-full h-screen md:w-1/3 mb-3 hidden md:block">
           <video
             className="w-full h-full object-cover"
-            src="/assets/video2.mp4"
+            src="https://res.cloudinary.com/djrbv23s0/video/upload/v1738379240/video2_czw0lp.mp4"
             muted
             autoPlay
             loop
@@ -48,7 +48,7 @@ const VideoComponent = () => {
         <div className="relative w-full h-screen md:w-1/3 mb-3 hidden md:block">
           <video
             className="w-full h-full object-cover"
-            src="/assets/video1.mp4"
+            src="https://res.cloudinary.com/djrbv23s0/video/upload/v1738379243/video1_kwqo22.mp4"
             muted
             autoPlay
             loop

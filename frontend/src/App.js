@@ -34,13 +34,13 @@ function App() {
                             <TextComponent />
                             <HeroVideo />
                             <HeroVideoTwo/>
-                            {/* <ImageComponent />
+                            <ImageComponent />
                             <VideoComponent />
                             <TextComponentTwo />
                             <ImageLayout />
                             <SingleVideo />
                             <TextComponentThree />
-                            <Footer /> */}
+                            <Footer />
                         </>
                     } />
                     <Route path="/whatsnew" element={

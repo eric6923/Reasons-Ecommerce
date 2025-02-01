@@ -27,15 +27,15 @@ const ImageComponent = () => {
 
   const images = [
     {
-      src: "https://i.pinimg.com/736x/fd/48/59/fd4859ad9cf1bce79c972d82162ade7f.jpg",
+      src: "https://res.cloudinary.com/djrbv23s0/image/upload/v1738379065/1_kifyb4.jpg",
       text: "Elegance Redefined",
     },
     {
-      src: "https://yaksideepthireddy.in/cdn/shop/files/Yaksi0506.jpg?v=1720978827&width=1445",
+      src: "https://res.cloudinary.com/djrbv23s0/image/upload/v1738379066/2_makno9.webp",
       text: "Timeless Beauty",
     },
     {
-      src: "https://www.gngmodels.com/wp-content/uploads/2022/02/PBS_1508-Final-682x1024.jpg",
+      src: "https://res.cloudinary.com/djrbv23s0/image/upload/v1738379066/3_ctfgto.jpg",
       text: "Where Excellence Meets Craftsmanship",
     },
   ];

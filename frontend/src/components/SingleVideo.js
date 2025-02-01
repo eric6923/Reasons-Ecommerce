@@ -31,7 +31,7 @@ const VideoPlayer = () => {
       <video
         ref={videoRef}
         className="w-full h-auto"
-        src="/assets/video4.mp4"
+        src="https://res.cloudinary.com/djrbv23s0/video/upload/v1738379910/video4_h67f2a.mp4"
         muted={isMuted}
         autoPlay
         loop
@@ -40,14 +40,14 @@ const VideoPlayer = () => {
       </video>
 
       {/* Controls */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-4">
+      {/* <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-4">
         <button onClick={togglePlayPause} className="text-white text-s">
           {isPlaying ? <FaPause /> : <FaPlay />}
         </button>
         <button onClick={toggleMuteUnmute} className="text-white text-s">
           {isMuted ? <MdVolumeOff /> : <MdVolumeUp />}
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
