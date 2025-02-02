@@ -52,34 +52,34 @@ function App() {
                     } />
                     <Route path="/HighJewelryComponent" element={
                         <>
-                            {/* <Navbar />
+                            <Navbar />
                             <HighJewelryComponent />
-                            <Footer /> */}
+                            <Footer />
                         </>
                     } />
                     <Route path="/catalogue" element={
                         <>
-                            {/* <Navbar />
+                            <Navbar />
                             <Catalogue />
-                            <Footer /> */}
+                            <Footer />
                         </>
                     } />
                     <Route path="/everyday" element={
                         <>
-                            {/* <Navbar />
+                            <Navbar />
                             <EveryDay />
-                            <Footer /> */}
+                            <Footer />
                         </>
                     } />
                       <Route path="/IndianBride" element={
                         <>
-                            {/* <Navbar />
+                            <Navbar />
                             <BrideGallery />
-                            <Footer /> */}
+                            <Footer />
                         </>
                     } />
-                    {/* <Route path="/login" element={<LoginPage />} />
-                    <Route path="/signup" element={<SignupPage />} /> */}
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/signup" element={<SignupPage />} />
                 </Routes>
             </div>
         </Router>
