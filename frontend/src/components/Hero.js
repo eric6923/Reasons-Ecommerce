@@ -35,7 +35,7 @@ const Hero = () => {
         <video
           ref={videoRef}
           className="w-full h-full object-cover"
-          src="https://res.cloudinary.com/djrbv23s0/video/upload/v1738316704/Hero_mj3xaf.mp4"
+          src="https://res.cloudinary.com/djrbv23s0/video/upload/q_auto,f_auto/v1738316704/Hero_mj3xaf.mp4"
           autoPlay
           muted
           loop

@@ -1,28 +1,47 @@
-import React, { useState, useRef } from "react";
-import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaUser, FaEnvelope, FaLock, FaPhone } from "react-icons/fa";
 
 const SignupPage = () => {
-  const [showOtp, setShowOtp] = useState(false);
-  const [otp, setOtp] = useState(["", "", "", ""]);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    phone: ""
+  });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
 
-  const otpRefs = useRef([]);
-
-  const handleSignup = () => {
-    // Handle your signup logic (e.g., API call)
-    // After the signup process, show the OTP inputs
-    setShowOtp(true);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
-  const handleOtpChange = (e, index) => {
-    const value = e.target.value;
-    if (/^[0-9]$/.test(value) || value === "") {
-      const newOtp = [...otp];
-      newOtp[index] = value;
-      setOtp(newOtp);
+  const handleSignup = async () => {
+    try {
+      const response = await fetch('https://reasons-server.vercel.app/api/auth/user/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
 
-      if (value && index < otpRefs.current.length - 1) {
-        otpRefs.current[index + 1].focus();
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccess(true);
+        // Redirect to login page after 2 seconds
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 2000);
+      } else {
+        setError(data.message || 'Registration failed');
       }
+    } catch (err) {
+      setError('Something went wrong. Please try again.');
     }
   };
 
@@ -40,8 +59,7 @@ const SignupPage = () => {
     ripple.style.top = `${top}px`;
     ripple.classList.add("ripple");
 
-    const rippleContainer =
-      button.getElementsByClassName("ripple-container")[0];
+    const rippleContainer = button.getElementsByClassName("ripple-container")[0];
     rippleContainer.appendChild(ripple);
 
     setTimeout(() => {
@@ -60,94 +78,101 @@ const SignupPage = () => {
           />
         </div>
 
-        {!showOtp ? (
-          <>
-            <h2 className="text-3xl font-bold hero-title text-center">
-              REASONS
-            </h2>
-            <p className="text-gray-500 text-center hero-text mt-2">
-              Enter the details to proceed
-            </p>
+        <h2 className="text-3xl font-bold hero-title text-center">
+          REASONS
+        </h2>
+        <p className="text-gray-500 text-center hero-text mt-2">
+          Enter the details to proceed
+        </p>
 
-            <div className="mt-6">
-              <div className="mb-4">
-                <div className="relative">
-                  <FaUser className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Enter your name"
-                    className="border border-gray-300 p-4 hero-text rounded-full w-full focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-200 pl-10"
-                  />
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <div className="relative">
-                  <FaEnvelope className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    className="border border-gray-300 p-4 rounded-full hero-text w-full focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-200 pl-10"
-                  />
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <div className="relative">
-                  <FaLock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="password"
-                    placeholder="Enter your password"
-                    className="border border-gray-300 p-4 rounded-full w-full focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-200 pl-10"
-                  />
-                </div>
-              </div>
-
-              <button
-                className="relative w-full py-3 mt-6 bg-black hero-text text-white rounded-full text-lg overflow-hidden focus:outline-none"
-                onClick={handleSignup}
-                onMouseDown={createRipple}
-              >
-                <div className="ripple-container absolute inset-0 overflow-hidden rounded-full"></div>
-                <span className="relative z-10 hero-text">Sign Up</span>
-              </button>
-
-              <hr className="my-6 border-gray-300" />
-
-              <p className="text-center hero-text">
-                Already have an account?{" "}
-                <span
-                  className="text-red-500 cursor-pointer hero-text hover:underline"
-                  onClick={() => (window.location.href = "/login")}
-                >
-                  Login
-                </span>
-              </p>
-            </div>
-          </>
-        ) : (
-          <div className="mt-6 text-center">
-            <p className="text-gray-500 hero-text">
-              Enter the OTP sent to your email
-            </p>
-            <div className="flex justify-between mt-4">
-              {[...Array(4)].map((_, index) => (
-                <input
-                  key={index}
-                  type="text"
-                  maxLength={1}
-                  className="border border-gray-300 p-4 hero-text rounded-full w-14 focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-200 text-center"
-                  value={otp[index]}
-                  onChange={(e) => handleOtpChange(e, index)}
-                  ref={(el) => (otpRefs.current[index] = el)}
-                />
-              ))}
-            </div>
-            <button className="relative w-full hero-text py-3 mt-6 bg-black text-white rounded-full text-lg hover:bg-gray-600 transition duration-200">
-              Verify OTP
-            </button>
-          </div>
+        {error && (
+          <p className="text-red-500 text-center mt-2">{error}</p>
         )}
+
+        {success && (
+          <p className="text-green-500 text-center mt-2">
+            Registration successful! Redirecting to login...
+          </p>
+        )}
+
+        <div className="mt-6">
+          <div className="mb-4">
+            <div className="relative">
+              <FaUser className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                placeholder="Enter your name"
+                className="border border-gray-300 p-4 hero-text rounded-full w-full focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-200 pl-10"
+              />
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <div className="relative">
+              <FaEnvelope className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="Enter your email"
+                className="border border-gray-300 p-4 rounded-full hero-text w-full focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-200 pl-10"
+              />
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <div className="relative">
+              <FaPhone className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                placeholder="Enter your phone number"
+                className="border border-gray-300 p-4 rounded-full hero-text w-full focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-200 pl-10"
+              />
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <div className="relative">
+              <FaLock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                placeholder="Enter your password"
+                className="border border-gray-300 p-4 rounded-full w-full focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-200 pl-10"
+              />
+            </div>
+          </div>
+
+          <button
+            className="relative w-full py-3 mt-6 bg-black hero-text text-white rounded-full text-lg overflow-hidden focus:outline-none"
+            onClick={handleSignup}
+            onMouseDown={createRipple}
+          >
+            <div className="ripple-container absolute inset-0 overflow-hidden rounded-full"></div>
+            <span className="relative z-10 hero-text">Sign Up</span>
+          </button>
+
+          <hr className="my-6 border-gray-300" />
+
+          <p className="text-center hero-text">
+            Already have an account?{" "}
+            <span
+              className="text-red-500 cursor-pointer hero-text hover:underline"
+              onClick={() => (window.location.href = "/login")}
+            >
+              Login
+            </span>
+          </p>
+        </div>
       </div>
 
       <style jsx>{`
