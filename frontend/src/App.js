@@ -21,6 +21,7 @@ import Catalogue from './components/Catalogue';
 import './index.css'; // Tailwind configuration should be here
 import EveryDay from './components/Everyday';
 import HeroVideoTwo from './components/HeroVideoTwo';
+import ProductDetails from './components/ProductsDetails/ProductDetails';
 
 function App() {
     return (
@@ -61,9 +62,11 @@ function App() {
                         <>
                             <Navbar />
                             <Catalogue />
+                            
                             <Footer />
                         </>
                     } />
+                    <Route path="/Product/:id" element={<ProductDetails />} />
                     <Route path="/everyday" element={
                         <>
                             <Navbar />

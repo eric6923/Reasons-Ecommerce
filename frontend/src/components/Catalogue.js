@@ -1,24 +1,23 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FaFilter, FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { products } from "./data"; // Assuming your product data is in a separate file.
-import { Link, useLocation } from "react-router-dom"; // Import useLocation
+import { Link, useLocation } from "react-router-dom";
 
 const metals = {
-  Kundan: {
+  GOLD: {
     Necklace: ["Choker", "Long Necklace", "Rani Haar"],
     Earrings: ["Jhumka", "Chandbalis", "Studs", "Drop Earrings"],
     Rings: ["Cocktail Rings", "Stackable Rings", "Statement Rings"],
     Bracelet: ["Cuffs", "Bangles", "Bracelets"],
     Others: ["Mang Tika", "Nath", "Nose Pin", "Armlets"],
   },
-  Silver: {
+  SILVER: {
     Necklace: ["Pendants", "Statement Pieces"],
     Earrings: ["Hoops", "Studs", "Drop Earrings"],
     Rings: ["Solitaire Rings", "Adjustable Rings"],
     Bracelet: ["Cuffs", "Bangles"],
     Others: ["Anklets", "Brooches"],
   },
-  Diamond: {
+  DIAMOND: {
     Necklace: ["Diamond Pendant", "Solitaire", "Tennis", "Cluster"],
     Earrings: ["Studs", "Hoops", "Chandeliers"],
     Rings: ["Fashion Rings"],
@@ -28,21 +27,43 @@ const metals = {
 };
 
 function App() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMetals, setSelectedMetals] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
-  const [price, setPrice] = useState(1000); // Price state
+  const [price, setPrice] = useState(10000);
   const [showFilter, setShowFilter] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
     metals: false,
     categories: false,
     subcategories: false,
-    price: false, // Added price section state
+    price: false,
   });
 
-  const location = useLocation(); // Access URL and query parameters
+  const location = useLocation();
   const [hoveredProductId, setHoveredProductId] = useState(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('https://reasons-server.vercel.app/api/products');
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
+        const data = await response.json();
+        setProducts(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -50,12 +71,10 @@ function App() {
     const subtype = params.get("subtype");
 
     if (type) {
-      setSelectedMetals([type.charAt(0).toUpperCase() + type.slice(1)]);
+      setSelectedMetals([type.toUpperCase()]);
     }
     if (subtype) {
-      setSelectedCategories([
-        subtype.charAt(0).toUpperCase() + subtype.slice(1),
-      ]);
+      setSelectedCategories([subtype.charAt(0).toUpperCase() + subtype.slice(1)]);
     }
   }, [location.search]);
 
@@ -66,20 +85,17 @@ function App() {
 
     const matchesMetal =
       selectedMetals.length === 0 ||
-      selectedMetals.some((metal) =>
-        product.id.startsWith(metal[0].toLowerCase())
-      );
+      selectedMetals.includes(product.material);
 
     const matchesCategory =
       selectedCategories.length === 0 ||
-      selectedCategories.includes(product.category);
+      selectedCategories.some(cat => 
+        product.category.name.toLowerCase().includes(cat.toLowerCase())
+      );
 
-    const matchesSubCategory =
-      subCategories.length === 0 || subCategories.includes(product.subcategory);
+    const matchesPrice = parseInt(product.discountedPrice) <= price;
 
-    return (
-      matchesSearch && matchesMetal && matchesCategory && matchesSubCategory
-    );
+    return matchesSearch && matchesMetal && matchesCategory && matchesPrice;
   });
 
   const toggleSection = (section) => {
@@ -105,9 +121,7 @@ function App() {
 
   const handleCategoryChange = (category) => {
     if (selectedCategories.includes(category)) {
-      setSelectedCategories(
-        selectedCategories.filter((cat) => cat !== category)
-      );
+      setSelectedCategories(selectedCategories.filter((cat) => cat !== category));
     } else {
       setSelectedCategories([...selectedCategories, category]);
     }
@@ -116,9 +130,11 @@ function App() {
   const getAvailableCategories = () => {
     const allCategories = new Set();
     selectedMetals.forEach((metal) => {
-      Object.keys(metals[metal]).forEach((category) => {
-        allCategories.add(category);
-      });
+      if (metals[metal]) {
+        Object.keys(metals[metal]).forEach((category) => {
+          allCategories.add(category);
+        });
+      }
     });
 
     if (selectedMetals.length === 0) {
@@ -132,36 +148,30 @@ function App() {
     return [...allCategories];
   };
 
-  const handleSubCategoryChange = (subcategory) => {
-    if (subCategories.includes(subcategory)) {
-      setSubCategories(subCategories.filter((sc) => sc !== subcategory));
-    } else {
-      setSubCategories([...subCategories, subcategory]);
-    }
-  };
-
-  const getAvailableSubCategories = (categories) => {
-    const allSubCategories = new Set();
-
-    categories.forEach((category) => {
-      selectedMetals.forEach((metal) => {
-        (metals[metal][category] || []).forEach((sub) => {
-          allSubCategories.add(sub);
-        });
-      });
-    });
-
-    return [...allSubCategories];
-  };
-
   const handlePriceChange = (e) => {
-    setPrice(e.target.value); // Update price state when slider is moved
+    setPrice(parseInt(e.target.value));
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-red-600">Error: {error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 hero-text">
       <img
-        src="https://i.pinimg.com/736x/da/e0/af/dae0afe558fc29c1759dfecae1cef049.jpg"
+        src="https://images.unsplash.com/photo-1584302179602-e4c3d3fd629d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
         alt="Banner"
         className="w-full h-60 object-cover brightness-50"
       />
@@ -203,11 +213,7 @@ function App() {
               onClick={() => toggleSection("metals")}
             >
               Metals
-              <span
-                className={`ml-2 transition-transform ${
-                  expandedSections.metals ? "rotate-180" : ""
-                }`}
-              >
+              <span className={`ml-2 transition-transform ${expandedSections.metals ? "rotate-180" : ""}`}>
                 {expandedSections.metals ? <FaChevronUp /> : <FaChevronDown />}
               </span>
             </h4>
@@ -221,16 +227,7 @@ function App() {
                       onChange={() => handleMetalChange(metal)}
                       className="mr-2 w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
                     />
-                    <Link
-                      to="/Catalogue"
-                      className="hero-text text-lg"
-                      onClick={() => {
-                        setSelectedMetals([metal]);
-                        setSelectedCategories([]);
-                      }}
-                    >
-                      {metal}
-                    </Link>
+                    <span className="hero-text text-lg">{metal}</span>
                   </div>
                 ))}
               </>
@@ -244,16 +241,8 @@ function App() {
               onClick={() => toggleSection("categories")}
             >
               Categories
-              <span
-                className={`ml-2 transition-transform ${
-                  expandedSections.categories ? "rotate-180" : ""
-                }`}
-              >
-                {expandedSections.categories ? (
-                  <FaChevronUp />
-                ) : (
-                  <FaChevronDown />
-                )}
+              <span className={`ml-2 transition-transform ${expandedSections.categories ? "rotate-180" : ""}`}>
+                {expandedSections.categories ? <FaChevronUp /> : <FaChevronDown />}
               </span>
             </h4>
             {expandedSections.categories && (
@@ -273,44 +262,6 @@ function App() {
             )}
           </div>
 
-          {/* Subcategory Filter */}
-          <div className="mt-4">
-            <h4
-              className="text-lg hero-text cursor-pointer flex justify-between items-center"
-              onClick={() => toggleSection("subcategories")}
-            >
-              Subcategories
-              <span
-                className={`ml-2 transition-transform ${
-                  expandedSections.subcategories ? "rotate-180" : ""
-                }`}
-              >
-                {expandedSections.subcategories ? (
-                  <FaChevronUp />
-                ) : (
-                  <FaChevronDown />
-                )}
-              </span>
-            </h4>
-            {expandedSections.subcategories &&
-              selectedMetals.length > 0 &&
-              selectedCategories.length > 0 && (
-                <>
-                  {getAvailableSubCategories(selectedCategories).map((sub) => (
-                    <div key={sub} className="flex items-center mb-2">
-                      <input
-                        type="checkbox"
-                        checked={subCategories.includes(sub)}
-                        onChange={() => handleSubCategoryChange(sub)}
-                        className="mr-2 w-4 h-6 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
-                      />
-                      <label className="hero-text text-lg">{sub}</label>
-                    </div>
-                  ))}
-                </>
-              )}
-          </div>
-
           {/* Price Filter */}
           <div className="mt-4">
             <h4
@@ -318,11 +269,7 @@ function App() {
               onClick={() => toggleSection("price")}
             >
               Price
-              <span
-                className={`ml-2 transition-transform ${
-                  expandedSections.price ? "rotate-180" : ""
-                }`}
-              >
+              <span className={`ml-2 transition-transform ${expandedSections.price ? "rotate-180" : ""}`}>
                 {expandedSections.price ? <FaChevronUp /> : <FaChevronDown />}
               </span>
             </h4>
@@ -331,12 +278,12 @@ function App() {
                 <input
                   type="range"
                   min="100"
-                  max="10000"
+                  max="100000"
                   value={price}
                   onChange={handlePriceChange}
                   className="w-full"
                 />
-                <p className="mt-2 hero-text">Max Price: ${price}</p>
+                <p className="mt-2 hero-text">Max Price: ₹{price}</p>
               </div>
             )}
           </div>
@@ -346,34 +293,36 @@ function App() {
       {/* Products Section */}
       <div className="p-6 grid grid-cols-2 md:grid-cols-4 gap-6">
         {filteredProducts.length === 0 ? (
-          <p className="hero-text text-gray-500">No products found</p>
+          <p className="hero-text text-gray-500 col-span-full text-center">No products found</p>
         ) : (
           filteredProducts.map((product) => (
             <div
               key={product.id}
-              className="relative bg-white shadow-md rounded-3xl p-3 text-center"
+              className="relative bg-white shadow-md rounded-3xl p-3 text-center group"
               onMouseEnter={() => setHoveredProductId(product.id)}
               onMouseLeave={() => setHoveredProductId(null)}
             >
               <img
-                src={
-                  hoveredProductId === product.id
-                    ? product.hoverImg
-                    : product.images[0]
-                }
+                src={product.images[0]?.imageUrl || 'https://via.placeholder.com/300'}
                 alt={product.name}
                 className="w-full h-48 rounded-3xl object-cover"
               />
 
-              <h4 className="hero-text mt-2 text-gray-500 text-s">{product.name}</h4>
-              <p className="hero-text text-s">{product.price}</p>
+              <div className="mt-3 space-y-1">
+                <h4 className="hero-text text-gray-800 font-medium">{product.name}</h4>
+                <p className="hero-text text-gray-500">{product.material}</p>
+                <div className="flex justify-center items-center space-x-2">
+                  <span className="hero-text text-gray-400 line-through">₹{product.actualPrice}</span>
+                  <span className="hero-text text-green-600 font-semibold">₹{product.discountedPrice}</span>
+                </div>
+              </div>
 
               {hoveredProductId === product.id && (
                 <Link
                   to={`/Product/${product.id}`}
-                  className="absolute inset-0 flex items-center justify-center rounded-3xl bg-black bg-opacity-15 text-white hero-text"
+                  className="absolute inset-0 flex items-center justify-center rounded-3xl bg-black bg-opacity-50 text-white hero-text opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 >
-                  {product.name}
+                  View Details
                 </Link>
               )}
             </div>

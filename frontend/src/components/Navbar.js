@@ -16,17 +16,6 @@ const Navbar = () => {
   const [submenuOpen, setSubmenuOpen] = useState(""); // To track the open submenu
   const [currentMenu, setCurrentMenu] = useState(""); // To track the current menu state
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
   const handleMenuClick = (menu) => {
     if (currentMenu === menu) {
       // If the menu is already open, close it
@@ -69,7 +58,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed w-full top-0 z-50 transition-all duration-800 ${
+      className={`absolute w-full top-0 z-50 transition-all duration-800 ${
         scrolled ? "bg-white text-black" : "bg-transparent text-white"
       } md:hover:bg-white md:hover:text-black`}
     > 
