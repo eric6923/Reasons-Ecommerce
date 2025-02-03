@@ -16,6 +16,8 @@ function ProductDetails() {
   const [cartMessage, setCartMessage] = useState("");
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [cartItems, setCartItems] = useState([]);
+  const [cartItemId, setCartItemId] = useState(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -34,6 +36,36 @@ function ProductDetails() {
   }, [id]);
 
   useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        const response = await fetch('https://reasons-server.vercel.app/api/cart', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setCartItems(data.cart || []);
+          // Find if current product exists in cart
+          const cartItem = data.cart?.find(item => item.productId === id);
+          if (cartItem) {
+            setCartItemId(cartItem.id);
+            setQuantity(cartItem.quantity);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching cart:', error);
+      }
+    };
+
+    fetchCart();
+  }, [id]);
+
+  useEffect(() => {
     const checkWishlistStatus = async () => {
       try {
         const token = localStorage.getItem('token');
@@ -47,7 +79,6 @@ function ProductDetails() {
 
         if (response.ok) {
           const data = await response.json();
-          // Check if the current product exists in the wishlist products array
           const isInWishlist = data.wishlist?.products.some(item => item.id === id);
           setIsWishlist(isInWishlist);
         }
@@ -58,6 +89,47 @@ function ProductDetails() {
 
     checkWishlistStatus();
   }, [id]);
+
+  const updateCartQuantity = async (newQuantity) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token || !cartItemId) return;
+
+      const response = await fetch(`https://reasons-server.vercel.app/api/cart/${cartItemId}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          quantity: newQuantity
+        })
+      });
+
+      if (response.ok) {
+        setQuantity(newQuantity);
+        setCartMessage("Cart updated successfully!");
+        setTimeout(() => setCartMessage(""), 3000);
+      } else {
+        setCartMessage("Failed to update cart. Please try again.");
+        setTimeout(() => setCartMessage(""), 3000);
+      }
+    } catch (error) {
+      console.error('Error updating cart:', error);
+      setCartMessage("Error updating cart. Please try again later.");
+      setTimeout(() => setCartMessage(""), 3000);
+    }
+  };
+
+  const handleQuantityChange = async (newQuantity) => {
+    if (cartItemId) {
+      // If item exists in cart, update quantity
+      await updateCartQuantity(newQuantity);
+    } else {
+      // If item doesn't exist in cart, just update local state
+      setQuantity(newQuantity);
+    }
+  };
 
   const handleWishlist = async () => {
     try {
@@ -105,7 +177,7 @@ function ProductDetails() {
   };
 
   const handleAddToCart = async () => {
-    setIsCartOpen(true); // Open the cart panel
+    setIsCartOpen(true);
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -113,24 +185,32 @@ function ProductDetails() {
         return;
       }
 
-      const response = await fetch('https://reasons-server.vercel.app/api/cart', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          productId: id,
-          quantity: quantity
-        })
-      });
-
-      if (response.ok) {
-        setCartMessage("Product added to cart successfully!");
-        setTimeout(() => setCartMessage(""), 3000);
+      if (cartItemId) {
+        // If item exists in cart, update quantity
+        await updateCartQuantity(quantity);
       } else {
-        setCartMessage("Failed to add product to cart. Please try again.");
-        setTimeout(() => setCartMessage(""), 3000);
+        // If item doesn't exist, add to cart
+        const response = await fetch('https://reasons-server.vercel.app/api/cart', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            productId: id,
+            quantity: quantity
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setCartItemId(data.cartItem.id);
+          setCartMessage("Product added to cart successfully!");
+          setTimeout(() => setCartMessage(""), 3000);
+        } else {
+          setCartMessage("Failed to add product to cart. Please try again.");
+          setTimeout(() => setCartMessage(""), 3000);
+        }
       }
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -424,14 +504,14 @@ function ProductDetails() {
                     {/* Quantity Selector */}
                     <div className="mt-3 flex items-center gap-3">
                       <button 
-                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        onClick={() => handleQuantityChange(Math.max(1, quantity - 1))}
                         className="p-1 hover:bg-gray-200 rounded-full transition-colors"
                       >
                         <Minus className="w-4 h-4" />
                       </button>
                       <span className="w-8 text-center font-medium">{quantity}</span>
                       <button 
-                        onClick={() => setQuantity(quantity + 1)}
+                        onClick={() => handleQuantityChange(quantity + 1)}
                         className="p-1 hover:bg-gray-200 rounded-full transition-colors"
                       >
                         <Plus className="w-4 h-4" />
