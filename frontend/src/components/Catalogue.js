@@ -44,7 +44,6 @@ function App() {
   });
 
   const location = useLocation();
-  const [hoveredProductId, setHoveredProductId] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -291,43 +290,39 @@ function App() {
       )}
 
       {/* Products Section */}
-      <div className="p-6 grid grid-cols-2 md:grid-cols-4 gap-6">
-        {filteredProducts.length === 0 ? (
-          <p className="hero-text text-gray-500 col-span-full text-center">No products found</p>
-        ) : (
-          filteredProducts.map((product) => (
-            <div
-              key={product.id}
-              className="relative bg-white shadow-md rounded-3xl p-3 text-center group"
-              onMouseEnter={() => setHoveredProductId(product.id)}
-              onMouseLeave={() => setHoveredProductId(null)}
-            >
-              <img
-                src={product.images[0]?.imageUrl || 'https://via.placeholder.com/300'}
-                alt={product.name}
-                className="w-full h-48 rounded-3xl object-cover"
-              />
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 py-6">
+          {filteredProducts.length === 0 ? (
+            <p className="hero-text text-gray-500 col-span-full text-center">No products found</p>
+          ) : (
+            filteredProducts.map((product) => (
+              <Link
+                key={product.id}
+                to={`/Product/${product.id}`}
+                className="block"
+              >
+                <div className="bg-white shadow-md hover:shadow-xl transition-shadow duration-300 rounded-2xl sm:rounded-3xl p-2 sm:p-4 text-center">
+                  <div className="relative overflow-hidden rounded-xl sm:rounded-2xl">
+                    <img
+                      src={product.images[0]?.imageUrl || 'https://via.placeholder.com/300'}
+                      alt={product.name}
+                      className="w-full h-32 sm:h-52 object-cover transform hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
 
-              <div className="mt-3 space-y-1">
-                <h4 className="hero-text text-gray-800 font-medium">{product.name}</h4>
-                <p className="hero-text text-gray-500">{product.material}</p>
-                <div className="flex justify-center items-center space-x-2">
-                  <span className="hero-text text-gray-400 line-through">₹{product.actualPrice}</span>
-                  <span className="hero-text text-green-600 font-semibold">₹{product.discountedPrice}</span>
+                  <div className="mt-2 sm:mt-4 space-y-0.5 sm:space-y-2">
+                    <h4 className="hero-text text-gray-800 font-medium text-sm sm:text-lg line-clamp-1">{product.name}</h4>
+                    <p className="hero-text text-gray-500 text-xs sm:text-base">{product.material}</p>
+                    <div className="flex justify-center items-center space-x-1 sm:space-x-3">
+                      <span className="hero-text text-gray-400 line-through text-xs sm:text-sm">₹{product.actualPrice}</span>
+                      <span className="hero-text text-green-600 font-semibold text-sm sm:text-lg">₹{product.discountedPrice}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-
-              {hoveredProductId === product.id && (
-                <Link
-                  to={`/Product/${product.id}`}
-                  className="absolute inset-0 flex items-center justify-center rounded-3xl bg-black bg-opacity-50 text-white hero-text opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                >
-                  View Details
-                </Link>
-              )}
-            </div>
-          ))
-        )}
+              </Link>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
