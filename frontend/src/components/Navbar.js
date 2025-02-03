@@ -15,6 +15,7 @@ import { IoChevronBackOutline } from "react-icons/io5";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMobileProfileOpen, setIsMobileProfileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const [activeSubMenu, setActiveSubMenu] = useState("");
@@ -122,6 +123,18 @@ const Navbar = () => {
       )}
     </div>
   );
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isMobileProfileOpen) {
+        setIsMobileProfileOpen(false);
+      }
+    };
+  
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMobileProfileOpen]);
 
   return (
     <nav
@@ -517,19 +530,71 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         <div>
-          <div className="md:hidden flex justify-between items-center w-full">
-            <motion.button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-3xl"
-              whileTap={{ rotate: 90 }}
-            >
-              {isOpen ? <FiX /> : <FiMenu />}
-            </motion.button>
+        <div className="md:hidden flex justify-between items-center w-full">
+  <motion.button
+    onClick={() => setIsOpen(!isOpen)}
+    className="text-3xl"
+    whileTap={{ rotate: 90 }}
+  >
+    {isOpen ? <FiX /> : <FiMenu />}
+  </motion.button>
 
-            <div className="absolute left-1/2 transform -translate-x-1/2 text-3xl hero-title font-bold">
-              REASONS
-            </div>
+            
+  <div className="flex items-center justify-center relative">
+  <span className={`text-3xl hero-title font-bold ${user ? 'mr-4' : 'mr-16'}`}>REASONS</span>
+    {user && (
+      <div className="relative ml-4">
+        <button 
+          onClick={() => setIsMobileProfileOpen(!isMobileProfileOpen)}
+          className="p-2 rounded-full hover:bg-gray-100/10"
+        >
+          <FiUser className="text-2xl" />
+        </button>
+        
+        {/* Dropdown Menu */}
+        {isMobileProfileOpen && (
+          <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+            <Link
+              to="/profile"
+              className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
+              onClick={() => setIsMobileProfileOpen(false)}
+            >
+              <FiUser className="mr-2" />
+              Profile
+            </Link>
+            <Link
+              to="/cart"
+              className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
+              onClick={() => setIsMobileProfileOpen(false)}
+            >
+              <FiShoppingCart className="mr-2" />
+              Cart
+            </Link>
+            <Link
+              to="/orders"
+              className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
+              onClick={() => setIsMobileProfileOpen(false)}
+            >
+              <FiPackage className="mr-2" />
+              Orders
+            </Link>
+            <button
+              onClick={() => {
+                handleLogout();
+                setIsMobileProfileOpen(false);
+              }}
+              className="flex items-center w-full px-4 py-3 text-sm text-red-600 hover:bg-gray-100"
+            >
+              <FiLogOut className="mr-2" />
+              Logout
+            </button>
           </div>
+        )}
+      </div>
+    )}
+  </div>
+</div>
+          
 
           {/* Full-Screen Mobile Menu */}
           <motion.div
