@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Heart, Share2, ChevronDown, Clock, ShieldCheck, RotateCcw, Maximize2, Check } from "lucide-react";
+import { ArrowLeft, Heart, Share2, ChevronDown, Clock, ShieldCheck, RotateCcw, Maximize2, Check, X, Plus, Minus } from "lucide-react";
 
 function ProductDetails() {
   const { id } = useParams();
@@ -14,6 +14,8 @@ function ProductDetails() {
   const [isWishlist, setIsWishlist] = useState(false);
   const [showPincodeSuccess, setShowPincodeSuccess] = useState(false);
   const [cartMessage, setCartMessage] = useState("");
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -103,6 +105,7 @@ function ProductDetails() {
   };
 
   const handleAddToCart = async () => {
+    setIsCartOpen(true); // Open the cart panel
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -118,7 +121,7 @@ function ProductDetails() {
         },
         body: JSON.stringify({
           productId: id,
-          quantity: 1
+          quantity: quantity
         })
       });
 
@@ -384,6 +387,88 @@ function ProductDetails() {
           </div>
         </div>
       </div>
+
+      {/* Sliding Cart Panel */}
+      <div className={`fixed inset-y-0 right-0 w-full sm:w-96 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-50 ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className="h-full flex flex-col">
+          {/* Header */}
+          <div className="p-4 border-b">
+            <div className="flex justify-between items-center">
+              <h2 className="text-lg font-semibold">Shopping Cart</h2>
+              <button 
+                onClick={() => setIsCartOpen(false)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Cart Content */}
+          <div className="flex-1 overflow-y-auto p-4">
+            {product && (
+              <div className="bg-gray-50 rounded-xl p-4">
+                <div className="flex gap-4">
+                  <img 
+                    src={product.images[0]?.imageUrl} 
+                    alt={product.name}
+                    className="w-20 h-20 object-cover rounded-lg"
+                  />
+                  <div className="flex-1">
+                    <h3 className="font-medium text-gray-900">{product.name}</h3>
+                    <div className="mt-1 flex items-baseline gap-2">
+                      <span className="text-lg font-semibold">₹{product.discountedPrice.toLocaleString()}</span>
+                      <span className="text-sm text-gray-500 line-through">₹{product.actualPrice.toLocaleString()}</span>
+                    </div>
+                    
+                    {/* Quantity Selector */}
+                    <div className="mt-3 flex items-center gap-3">
+                      <button 
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        className="p-1 hover:bg-gray-200 rounded-full transition-colors"
+                      >
+                        <Minus className="w-4 h-4" />
+                      </button>
+                      <span className="w-8 text-center font-medium">{quantity}</span>
+                      <button 
+                        onClick={() => setQuantity(quantity + 1)}
+                        className="p-1 hover:bg-gray-200 rounded-full transition-colors"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="p-4 border-t bg-white">
+            <div className="mb-4">
+              <div className="flex justify-between mb-2">
+                <span className="text-gray-600">Subtotal</span>
+                <span className="font-medium">₹{(product?.discountedPrice * quantity).toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-sm text-gray-500">
+                <span>Shipping</span>
+                <span>Calculated at checkout</span>
+              </div>
+            </div>
+            <button className="w-full py-3 bg-pink-600 text-white rounded-xl font-semibold hover:bg-pink-700 transition-colors">
+              Proceed to Checkout
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Overlay */}
+      {isCartOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={() => setIsCartOpen(false)}
+        />
+      )}
     </div>
   );
 }
