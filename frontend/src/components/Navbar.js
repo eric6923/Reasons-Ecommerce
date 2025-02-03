@@ -638,14 +638,15 @@ const Navbar = () => {
                 </li>
                 <hr className="border-gray-600" />
                 <li>
-                  <button
-                    onClick={() => handleMenuClick("shop")}
-                    className="text-xl flex items-center justify-between w-full"
-                  >
-                    <span>SHOP</span>
-                    <FiChevronRight />
-                  </button>
-                </li>
+  <Link
+    to="/Catalogue"
+    onClick={() => setIsOpen(false)}
+    className="text-xl flex items-center justify-between w-full"
+  >
+    <span>SHOP</span>
+    <FiChevronRight />
+  </Link>
+</li>
                 <hr className="border-gray-600" />
                 <li>
                   <button
