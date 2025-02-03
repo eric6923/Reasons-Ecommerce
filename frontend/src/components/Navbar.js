@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion"; // For animation
+import { motion } from "framer-motion";
 import {
   FiX,
   FiMenu,
   FiChevronRight,
+  FiChevronDown,
+  FiUser,
+  FiShoppingCart,
+  FiPackage,
+  FiLogOut
 } from "react-icons/fi";
 import { IoChevronBackOutline } from "react-icons/io5";
 
@@ -13,9 +18,10 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const [activeSubMenu, setActiveSubMenu] = useState("");
-  const [submenuOpen, setSubmenuOpen] = useState(""); // To track the open submenu
-  const [currentMenu, setCurrentMenu] = useState(""); // To track the current menu state
-
+  const [submenuOpen, setSubmenuOpen] = useState("");
+  const [currentMenu, setCurrentMenu] = useState("");
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const handleMenuClick = (menu) => {
     if (currentMenu === menu) {
       // If the menu is already open, close it
@@ -55,6 +61,67 @@ const Navbar = () => {
     setActiveSubMenu(submenu);
   };
   
+  useEffect(() => {
+    // Check for user in localStorage
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+    setIsProfileOpen(false);
+    // Add any additional logout logic here
+  };
+  const ProfileDropdown = () => (
+    <div className="relative group">
+      <button
+        onClick={() => setIsProfileOpen(!isProfileOpen)}
+        className="py-0 px-4 text-lg group-hover:text-black flex items-center space-x-1 h-full"
+      >
+        <span>Hi, {user?.name}</span>
+        <FiChevronDown className={`transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
+      </button>
+      
+      {isProfileOpen && (
+        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+          <Link
+            to="/profile"
+            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            onClick={() => setIsProfileOpen(false)}
+          >
+            <FiUser className="mr-2" />
+            Profile
+          </Link>
+          <Link
+            to="/cart"
+            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            onClick={() => setIsProfileOpen(false)}
+          >
+            <FiShoppingCart className="mr-2" />
+            Cart
+          </Link>
+          <Link
+            to="/orders"
+            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            onClick={() => setIsProfileOpen(false)}
+          >
+            <FiPackage className="mr-2" />
+            Orders
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            <FiLogOut className="mr-2" />
+            Logout
+          </button>
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <nav
@@ -437,12 +504,13 @@ const Navbar = () => {
               )}
             </li>
             <li>
-              <Link
-                to="/login"
-                className="py-2 px-4 text-lg group-hover:text-black"
-              >
-                LOGIN
-              </Link>
+              {user ? (
+                <ProfileDropdown />
+              ) : (
+                <Link to="/login" className="py-2 px-4 text-lg group-hover:text-black">
+                  LOGIN
+                </Link>
+              )}
             </li>
           </ul>
         </div>
