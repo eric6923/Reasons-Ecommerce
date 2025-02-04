@@ -61,7 +61,7 @@ const Navbar = () => {
   const handleMouseEnterSubMenu = (submenu) => {
     setActiveSubMenu(submenu);
   };
-  
+
   useEffect(() => {
     // Check for user in localStorage
     const storedUser = localStorage.getItem('user');
@@ -85,7 +85,7 @@ const Navbar = () => {
         <span>Hi, {user?.name}</span>
         <FiChevronDown className={`transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
       </button>
-      
+
       {isProfileOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
           <Link
@@ -129,7 +129,7 @@ const Navbar = () => {
         setIsMobileProfileOpen(false);
       }
     };
-  
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -138,10 +138,9 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`absolute w-full top-0 z-50 transition-all duration-800 ${
-        scrolled ? "bg-white text-black" : "bg-transparent text-white"
-      } md:hover:bg-white md:hover:text-black`}
-    > 
+      className={`absolute w-full top-0 z-50 transition-all duration-800 ${scrolled ? "bg-white text-black" : "bg-transparent text-white"
+        } md:hover:bg-white md:hover:text-black`}
+    >
       <div className="container mx-auto p-5">
         {/* Desktop Navbar */}
         <div className="hidden md:flex flex-col items-center hero-text relative z-20">
@@ -366,9 +365,8 @@ const Navbar = () => {
 
                     {/* Submenu content for Kundan, Silver, Diamond */}
                     <div
-                      className={`flex flex-col ${
-                        activeSubMenu === "kundan" ? "block" : "hidden"
-                      }`}
+                      className={`flex flex-col ${activeSubMenu === "kundan" ? "block" : "hidden"
+                        }`}
                     >
                       <h3 className="text-lg font-bold">KUNDAN</h3>
                       <Link
@@ -421,9 +419,8 @@ const Navbar = () => {
                       </Link>
                     </div>
                     <div
-                      className={`flex flex-col ${
-                        activeSubMenu === "silver" ? "block" : "hidden"
-                      }`}
+                      className={`flex flex-col ${activeSubMenu === "silver" ? "block" : "hidden"
+                        }`}
                     >
                       <h3 className="text-lg font-bold">SILVER</h3>
                       <Link
@@ -464,9 +461,8 @@ const Navbar = () => {
                       </Link>
                     </div>
                     <div
-                      className={`flex flex-col ${
-                        activeSubMenu === "diamond" ? "block" : "hidden"
-                      }`}
+                      className={`flex flex-col ${activeSubMenu === "diamond" ? "block" : "hidden"
+                        }`}
                     >
                       <h3 className="text-lg font-bold">DIAMOND</h3>
                       <Link
@@ -530,71 +526,71 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         <div>
-        <div className="md:hidden flex justify-between items-center w-full">
-  <motion.button
-    onClick={() => setIsOpen(!isOpen)}
-    className="text-3xl"
-    whileTap={{ rotate: 90 }}
-  >
-    {isOpen ? <FiX /> : <FiMenu />}
-  </motion.button>
+          <div className="md:hidden flex justify-between items-center w-full">
+            <motion.button
+              onClick={() => setIsOpen(!isOpen)}
+              className="text-3xl"
+              whileTap={{ rotate: 90 }}
+            >
+              {isOpen ? <FiX /> : <FiMenu />}
+            </motion.button>
 
-            
-  <div className="flex items-center justify-center relative">
-  <span className={`text-3xl hero-title font-bold ${user ? 'mr-4' : 'mr-16'}`}>REASONS</span>
-    {user && (
-      <div className="relative ml-4">
-        <button 
-          onClick={() => setIsMobileProfileOpen(!isMobileProfileOpen)}
-          className="p-2 rounded-full hover:bg-gray-100/10"
-        >
-          <FiUser className="text-2xl" />
-        </button>
-        
-        {/* Dropdown Menu */}
-        {isMobileProfileOpen && (
-          <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-            <Link
-              to="/profile"
-              className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
-              onClick={() => setIsMobileProfileOpen(false)}
-            >
-              <FiUser className="mr-2" />
-              Profile
-            </Link>
-            <Link
-              to="/cart"
-              className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
-              onClick={() => setIsMobileProfileOpen(false)}
-            >
-              <FiShoppingCart className="mr-2" />
-              Cart
-            </Link>
-            <Link
-              to="/orders"
-              className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
-              onClick={() => setIsMobileProfileOpen(false)}
-            >
-              <FiPackage className="mr-2" />
-              Orders
-            </Link>
-            <button
-              onClick={() => {
-                handleLogout();
-                setIsMobileProfileOpen(false);
-              }}
-              className="flex items-center w-full px-4 py-3 text-sm text-red-600 hover:bg-gray-100"
-            >
-              <FiLogOut className="mr-2" />
-              Logout
-            </button>
+
+            <div className="flex items-center justify-center relative">
+              <span className={`text-3xl hero-title font-bold ${user ? 'mr-4' : 'mr-16'}`}>REASONS</span>
+              {user && (
+                <div className="relative ml-4">
+                  <button
+                    onClick={() => setIsMobileProfileOpen(!isMobileProfileOpen)}
+                    className="p-2 rounded-full hover:bg-gray-100/10"
+                  >
+                    <FiUser className="text-2xl" />
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {isMobileProfileOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                      <Link
+                        to="/profile"
+                        className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsMobileProfileOpen(false)}
+                      >
+                        <FiUser className="mr-2" />
+                        Profile
+                      </Link>
+                      <Link
+                        to="/cart"
+                        className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsMobileProfileOpen(false)}
+                      >
+                        <FiShoppingCart className="mr-2" />
+                        Cart
+                      </Link>
+                      <Link
+                        to="/orders"
+                        className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsMobileProfileOpen(false)}
+                      >
+                        <FiPackage className="mr-2" />
+                        Orders
+                      </Link>
+                      <button
+                        onClick={() => {
+                          handleLogout();
+                          setIsMobileProfileOpen(false);
+                        }}
+                        className="flex items-center w-full px-4 py-3 text-sm text-red-600 hover:bg-gray-100"
+                      >
+                        <FiLogOut className="mr-2" />
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
-        )}
-      </div>
-    )}
-  </div>
-</div>
-          
+
 
           {/* Full-Screen Mobile Menu */}
           <motion.div
@@ -638,15 +634,15 @@ const Navbar = () => {
                 </li>
                 <hr className="border-gray-600" />
                 <li>
-  <Link
-    to="/Catalogue"
-    onClick={() => setIsOpen(false)}
-    className="text-xl flex items-center justify-between w-full"
-  >
-    <span>SHOP</span>
-    <FiChevronRight />
-  </Link>
-</li>
+                  <Link
+                    to="/Catalogue"
+                    onClick={() => setIsOpen(false)}
+                    className="text-xl flex items-center justify-between w-full"
+                  >
+                    <span>SHOP</span>
+                    <FiChevronRight />
+                  </Link>
+                </li>
                 <hr className="border-gray-600" />
                 <li>
                   <button
@@ -708,11 +704,10 @@ const Navbar = () => {
                       <li>
                         <button
                           onClick={() => handleSubMenuClick("silver")}
-                          className={`text-xl flex items-center justify-between w-full ${
-                            activeSubMenu === "silver"
+                          className={`text-xl flex items-center justify-between w-full ${activeSubMenu === "silver"
                               ? "text-gray-400"
                               : "text-black"
-                          }`}
+                            }`}
                         >
                           <span>SILVER</span>
                           <FiChevronRight />
@@ -722,11 +717,10 @@ const Navbar = () => {
                       <li>
                         <button
                           onClick={() => handleSubMenuClick("diamond")}
-                          className={`text-xl flex items-center justify-between w-full ${
-                            activeSubMenu === "diamond"
+                          className={`text-xl flex items-center justify-between w-full ${activeSubMenu === "diamond"
                               ? "text-gray-400"
                               : "text-black"
-                          }`}
+                            }`}
                         >
                           <span>DIAMOND</span>
                           <FiChevronRight />

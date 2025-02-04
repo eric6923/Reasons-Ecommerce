@@ -225,6 +225,7 @@ function ProductDetails() {
       setTimeout(() => setShowPincodeSuccess(false), 3000);
     }
   };
+  
 
   if (loading) {
     return (
@@ -535,9 +536,11 @@ function ProductDetails() {
                 <span>Calculated at checkout</span>
               </div>
             </div>
+            <Link to="/address">
             <button className="w-full py-3 bg-pink-600 text-white rounded-xl font-semibold hover:bg-pink-700 transition-colors">
               Proceed to Checkout
             </button>
+            </Link>
           </div>
         </div>
       </div>
