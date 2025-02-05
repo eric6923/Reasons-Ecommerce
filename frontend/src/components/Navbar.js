@@ -13,6 +13,7 @@ import {
 } from "react-icons/fi";
 import { IoChevronBackOutline } from "react-icons/io5";
 
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobileProfileOpen, setIsMobileProfileOpen] = useState(false);
@@ -23,6 +24,34 @@ const Navbar = () => {
   const [currentMenu, setCurrentMenu] = useState("");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [isVisible, setIsVisible] = useState(true);
+const [lastScrollY, setLastScrollY] = useState(0);
+
+// Add this useEffect after your other useEffect hooks
+useEffect(() => {
+  const controlNavbar = () => {
+    if (typeof window !== 'undefined') {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > lastScrollY) { // scrolling down
+        setIsVisible(false);
+      } else { // scrolling up
+        setIsVisible(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    }
+  };
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('scroll', controlNavbar);
+
+    // cleanup function
+    return () => {
+      window.removeEventListener('scroll', controlNavbar);
+    };
+  }
+}, [lastScrollY]);
   const handleMenuClick = (menu) => {
     if (currentMenu === menu) {
       // If the menu is already open, close it
@@ -138,8 +167,11 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`absolute w-full top-0 z-50 transition-all duration-800 ${scrolled ? "bg-white text-black" : "bg-transparent text-white"
-        } md:hover:bg-white md:hover:text-black`}
+    className={`fixed w-full top-0 z-50 transition-all duration-300 ${
+      scrolled ? "bg-white text-black" : "bg-transparent text-white"
+    } md:hover:bg-white md:hover:text-black ${
+      isVisible ? 'translate-y-0' : '-translate-y-full'
+    }`}
     >
       <div className="container mx-auto p-5">
         {/* Desktop Navbar */}
