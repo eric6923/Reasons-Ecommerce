@@ -30,7 +30,7 @@ const Header = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      setUser({ name: 'John Doe' });
+      setUser();
       fetchWishlist();
       fetchCart();
     }
@@ -137,11 +137,13 @@ const Header = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    setUser(null);
+    localStorage.removeItem('user');
     setWishlistCount(0);
     setWishlistProducts([]);
     setCartItems([]);
     setCartItemsCount(0);
+    // Optional: Redirect to home or login page
+    window.location.href = '/';  // Add this line if you want to redirect after logout
   };
 
   const calculateTotal = () => {
@@ -191,7 +193,7 @@ const Header = () => {
               <span className="text-lg font-bold text-[#9D2235]">₹{calculateTotal()}</span>
             </div>
             <a 
-              href="/checkout" 
+              href="/address" 
               className="block w-full bg-[#9D2235] text-white text-center py-2 rounded-md hover:bg-[#7d1b2a] transition-colors"
             >
               Proceed to Checkout
@@ -421,14 +423,14 @@ const Header = () => {
                         href="/login"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
-                        Login
+                        Change User
                       </a>
-                      <a
-                        href="/register"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      >
-                        Register
-                      </a>
+                      <button
+  onClick={handleLogout}
+  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full"
+>
+  Logout
+</button>
                     </>
                   )}
                 </div>
